@@ -1,9 +1,11 @@
+package tech.ada.java.dto;
+import java.time.LocalDate;
 import java.util.Date;
 
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvDate;
 
-public class BeanUmResultado extends CsvBean {
+public class BeanUmResultado {
 	
 	@CsvBindByName(column = "Concurso")
     private int concurso;
@@ -18,7 +20,7 @@ public class BeanUmResultado extends CsvBean {
 
 	@CsvBindByName(column = "Data do Sorteio")
     @CsvDate("dd/MM/yyyy")
-    private Date dataSorteio;
+    private LocalDate dataSorteio;
     
     @CsvBindByName
     private int coluna1;
@@ -38,11 +40,11 @@ public class BeanUmResultado extends CsvBean {
     @CsvBindByName
     private int coluna6;
 
-	public Date getDataSorteio() {
+	public LocalDate getDataSorteio() {
 		return dataSorteio;
 	}
 
-	public void setDataSorteio(Date dataSorteio) {
+	public void setDataSorteio(LocalDate dataSorteio) {
 		this.dataSorteio = dataSorteio;
 	}
 

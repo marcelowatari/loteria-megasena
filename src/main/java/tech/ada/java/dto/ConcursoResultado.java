@@ -1,3 +1,5 @@
+package tech.ada.java.dto;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
@@ -5,7 +7,7 @@ import java.util.HashSet;
 public class ConcursoResultado {
 
 	private int concurso;
-	private Date dataSorteio;
+	private LocalDate dataSorteio;
 	private HashSet<Integer> numerosSorteados;
 	
 	public ConcursoResultado(BeanUmResultado beanUmResultado) {
@@ -22,10 +24,10 @@ public class ConcursoResultado {
 	}
 	
 	
-	public Date getDataSorteio() {
+	public LocalDate getDataSorteio() {
 		return dataSorteio;
 	}
-	public void setDataSorteio(Date dataSorteio) {
+	public void setDataSorteio(LocalDate dataSorteio) {
 		this.dataSorteio = dataSorteio;
 	}
 	public HashSet<Integer> getNumerosSorteados() {
