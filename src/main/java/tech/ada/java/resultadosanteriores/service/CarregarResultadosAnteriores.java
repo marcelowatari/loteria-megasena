@@ -1,4 +1,4 @@
-package tech.ada.java.service;
+package tech.ada.java.resultadosanteriores.service;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -15,8 +15,8 @@ import org.slf4j.LoggerFactory;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import tech.ada.java.dto.BeanUmResultado;
-import tech.ada.java.dto.ConcursoResultado;
+import tech.ada.java.resultadosanteriores.dto.BeanUmResultado;
+import tech.ada.java.resultadosanteriores.dto.ConcursoResultado;
 
 public class CarregarResultadosAnteriores {
 	

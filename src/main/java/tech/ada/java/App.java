@@ -1,11 +1,4 @@
 package tech.ada.java;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Map;
-
-import tech.ada.java.dto.ConcursoResultado;
-import tech.ada.java.service.CarregarResultadosAnteriores;
 
 public class App {
 

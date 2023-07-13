@@ -2,11 +2,15 @@ package tech.ada.java;
 
 import java.util.Map;
 
-import tech.ada.java.dto.ConcursoResultado;
-import tech.ada.java.service.CarregarResultadosAnteriores;
-import tech.ada.java.service.ResultadosAnterioresService;
+import tech.ada.java.meusjogos.dto.BeanMeuJogo;
+import tech.ada.java.meusjogos.dto.MeuJogoNumerosEscolhidos;
+import tech.ada.java.meusjogos.service.CarregarMeusJogos;
+import tech.ada.java.resultadosanteriores.dto.ConcursoResultado;
+import tech.ada.java.resultadosanteriores.service.CarregarResultadosAnteriores;
+import tech.ada.java.resultadosanteriores.service.ResultadosAnterioresService;
 
 public class Loterias {
+	private final String filePathMeusJogos = "meus-jogos.csv";
 	private final String filePathResultadosAnteriores = "resultados-anteriores.csv";
 
     private final EntradaDeDados leitor;
@@ -21,11 +25,16 @@ public class Loterias {
     private final String OPCAO_BUSCA_POR_ID = "4";
     private final String OPCAO_BUSCA_POR_NOME = "5";
 
+    Map<Integer, MeuJogoNumerosEscolhidos> meusJogos;
+    
 	public Loterias(EntradaDeDados leitor) {
 		this.leitor = leitor;
 		iniciaApp();
+		
 		Map<Integer, ConcursoResultado> resultadosAnteriores = CarregarResultadosAnteriores.carregar(filePathResultadosAnteriores);
 		resultadosAnterioresService = new ResultadosAnterioresService( resultadosAnteriores );
+		
+		meusJogos = CarregarMeusJogos.carregar(filePathMeusJogos);
 	}
 
 	public void processar() {
@@ -48,7 +57,7 @@ public class Loterias {
             case OPCAO_CHECAR_JOGO_JA_SORTEADO:
                 this.checarJogoAlgumaVezSorteado();
                 System.out.println("Cadastro realizado com sucesso!");
-                //pularLinha(2);
+                pularLinha(2);
                 break;
 //            case OPCAO_LISTAR_FUNCIONARIOS:
 //                listarFuncionarios();
@@ -70,23 +79,27 @@ public class Loterias {
     }
 
     private void checarJogoAlgumaVezSorteado(){
-        System.out.print("Digite o jogo que gostaria de checar no formato N, N, N, N, N, N ");
-        String jogoAPesquisar = leitor.obterEntrada();
-        System.out.println("Vamos ver se voce teria ganho alguma vez na mega com este jogo: " + jogoAPesquisar );
-        resultadosAnterioresService.checarJogoAlgumaVezSorteado( jogoAPesquisar );
+        System.out.println("Vamos ver se voce teria ganho alguma vez na mega com estes jogos: " );
+        System.out.println("Inicio - listagem dos seus jogos " );
+
+        for (MeuJogoNumerosEscolhidos meuJogo : meusJogos.values()) {
+        	 System.out.println ( meuJogo.getNumerosQueEscolhiJogar() );
+		}
+        
+        System.out.println("Fim - listagem dos seus jogos " );
+        System.out.println("*** Inicio - checando se algum destes seus jogos foram sorteados alguma vez na mega sena " );
+        resultadosAnterioresService.checarJogoAlgumaVezSorteado( meusJogos );
+        System.out.println("*** Fim - checando se algum destes seus jogos foram sorteados alguma vez na mega sena " );
+
+    }
+    
+    public void pularLinha(int numeroDeLinhas){
+        for (int i = 1; i <= numeroDeLinhas; i++) {
+            System.out.println();
+        }
     }
 
-//    private void buscaPorIdHashMap(){
-//        System.out.print("Digite o id do funcionario: ");
-//        Integer id = leitor.obterEntradaAsInt();
-//        Funcionario funcionario = this.mapaIdFuncionario.get(id);
-//        if(funcionario != null){
-//            System.out.println("Funcionário localizado!");
-//            System.out.println(funcionario);
-//        } else {
-//            System.out.println("Nenhum funcionário localizado para o id: " + id);
-//        }
-//    }
+
 //
 //    private void buscaPorNomeHashMap(){
 //        System.out.print("Digite o primeiro nome do funcionario: ");

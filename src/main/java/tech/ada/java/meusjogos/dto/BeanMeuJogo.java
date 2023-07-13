@@ -1,28 +1,20 @@
-package tech.ada.java.dto;
-import java.time.LocalDate;
-import java.util.Date;
-
+package tech.ada.java.meusjogos.dto;
 import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvDate;
 
-public class BeanUmResultado {
+public class BeanMeuJogo {
 	
-	@CsvBindByName(column = "Concurso")
-    private int concurso;
+	@CsvBindByName(column = "IdJogo")
+    private int idJogo;
 
-    public int getConcurso() {
-		return concurso;
+	public int getIdJogo() {
+		return idJogo;
 	}
 
-	public void setConcurso(int concurso) {
-		this.concurso = concurso;
+	public void setIdJogo(int idJogo) {
+		this.idJogo = idJogo;
 	}
 
-	@CsvBindByName(column = "Data do Sorteio")
-    @CsvDate("dd/MM/yyyy")
-    private LocalDate dataSorteio;
-    
-    @CsvBindByName
+	@CsvBindByName
     private int coluna1;
     
     @CsvBindByName
@@ -39,14 +31,6 @@ public class BeanUmResultado {
     
     @CsvBindByName
     private int coluna6;
-
-	public LocalDate getDataSorteio() {
-		return dataSorteio;
-	}
-
-	public void setDataSorteio(LocalDate dataSorteio) {
-		this.dataSorteio = dataSorteio;
-	}
 
 	public int getColuna1() {
 		return coluna1;
@@ -95,5 +79,13 @@ public class BeanUmResultado {
 	public void setColuna6(int coluna6) {
 		this.coluna6 = coluna6;
 	}
+
+	@Override
+	public String toString() {
+		return "BeanMeuJogo [idJogo=" + idJogo + ", coluna1=" + coluna1 + ", coluna2=" + coluna2 + ", coluna3="
+				+ coluna3 + ", coluna4=" + coluna4 + ", coluna5=" + coluna5 + ", coluna6=" + coluna6 + "]";
+	}
+	
+	
     
 }

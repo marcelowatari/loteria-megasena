@@ -1,7 +1,6 @@
-package tech.ada.java.dto;
+package tech.ada.java.resultadosanteriores.dto;
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
 public class ConcursoResultado {
