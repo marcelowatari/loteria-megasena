@@ -2,7 +2,6 @@ package tech.ada.java;
 
 import java.util.Map;
 
-import tech.ada.java.meusjogos.dto.BeanMeuJogo;
 import tech.ada.java.meusjogos.dto.MeuJogoNumerosEscolhidos;
 import tech.ada.java.meusjogos.service.CarregarMeusJogos;
 import tech.ada.java.resultadosanteriores.dto.ConcursoResultado;
@@ -20,10 +19,10 @@ public class Loterias {
     private final String DIGITE_OPCAO_DESEJADA = "Digite a opção desejada: ";
     private final String OPCAO_SAIR = "x";
     private final String OPCAO_CHECAR_JOGO_JA_SORTEADO = "1";
-    private final String OPCAO_LISTAR_FUNCIONARIOS = "2";
-    private final String OPCAO_CADASTRAR_EM_LOTE = "3";
-    private final String OPCAO_BUSCA_POR_ID = "4";
-    private final String OPCAO_BUSCA_POR_NOME = "5";
+    private final String OPCAO_VER_FREQUENCIA_COM_QUE_AS_DEZENAS_SAEM_NOS_SORTEIOS = "2";
+    private final String OPCAO_VER_AS_DEZENAS_MAIS_SORTEADAS = "3";
+//    private final String OPCAO_BUSCA_POR_ID = "4";
+//    private final String OPCAO_BUSCA_POR_NOME = "5";
 
     Map<Integer, MeuJogoNumerosEscolhidos> meusJogos;
     
@@ -31,10 +30,15 @@ public class Loterias {
 		this.leitor = leitor;
 		iniciaApp();
 		
+        pularLinha(2);
+
 		Map<Integer, ConcursoResultado> resultadosAnteriores = CarregarResultadosAnteriores.carregar(filePathResultadosAnteriores);
 		resultadosAnterioresService = new ResultadosAnterioresService( resultadosAnteriores );
-		
+
+		pularLinha(2);
 		meusJogos = CarregarMeusJogos.carregar(filePathMeusJogos);
+		pularLinha(2);
+
 	}
 
 	public void processar() {
@@ -55,31 +59,36 @@ public class Loterias {
             case OPCAO_SAIR:
                 break;
             case OPCAO_CHECAR_JOGO_JA_SORTEADO:
-                this.checarJogoAlgumaVezSorteado();
-                System.out.println("Cadastro realizado com sucesso!");
                 pularLinha(2);
+                this.checarJogoAlgumaVezSorteado();
+                this.pularLinha(2);
                 break;
-//            case OPCAO_LISTAR_FUNCIONARIOS:
-//                listarFuncionarios();
-//                pularLinha(2);
-//                break;
-//            case OPCAO_CADASTRAR_EM_LOTE:
-//                carregarFuncionariosEmLote();
-//                break;
-//            case OPCAO_BUSCA_POR_ID:
-//                buscaPorIdHashMap();
-//                break;
-//            case OPCAO_BUSCA_POR_NOME:
-//                buscaPorNomeHashMap();
-//                break;
+            case OPCAO_VER_FREQUENCIA_COM_QUE_AS_DEZENAS_SAEM_NOS_SORTEIOS:
+                this.verFrequenciaDezenasSaemSorteios();
+                this.pularLinha(2);
+                break;
+            case OPCAO_VER_AS_DEZENAS_MAIS_SORTEADAS:
+                this.verDezenasMaisSorteadas();
+                this.pularLinha(2);
+                break;
             default:
                 opcaoInvalida();
                 break;
         }
     }
 
-    private void checarJogoAlgumaVezSorteado(){
+    private void verDezenasMaisSorteadas() {
+   	 resultadosAnterioresService.verDezenasMaisSorteadas();
+		
+	}
+
+	private void verFrequenciaDezenasSaemSorteios() {
+    	 resultadosAnterioresService.verFrequenciaDezenasSaemSorteios();
+	}
+
+	private void checarJogoAlgumaVezSorteado(){
         System.out.println("Vamos ver se voce teria ganho alguma vez na mega com estes jogos: " );
+        pularLinha(1);
         System.out.println("Inicio - listagem dos seus jogos " );
 
         for (MeuJogoNumerosEscolhidos meuJogo : meusJogos.values()) {
@@ -87,6 +96,8 @@ public class Loterias {
 		}
         
         System.out.println("Fim - listagem dos seus jogos " );
+        pularLinha(1);
+
         System.out.println("*** Inicio - checando se algum destes seus jogos foram sorteados alguma vez na mega sena " );
         resultadosAnterioresService.checarJogoAlgumaVezSorteado( meusJogos );
         System.out.println("*** Fim - checando se algum destes seus jogos foram sorteados alguma vez na mega sena " );
@@ -99,39 +110,6 @@ public class Loterias {
         }
     }
 
-
-//
-//    private void buscaPorNomeHashMap(){
-//        System.out.print("Digite o primeiro nome do funcionario: ");
-//        String primeiroNome = leitor.obterEntrada().toLowerCase();
-//        List<Funcionario> funcionarios = this.mapaFuncionarioPorNome.get(primeiroNome);
-//        if(funcionarios != null){
-//            System.out.println("Funcionário(s) localizado(s)!");
-//            for (Funcionario funcionario: funcionarios){
-//                System.out.println(funcionario);
-//            }
-//        } else {
-//            System.out.println("Nenhum funcionário localizado para o nome: " + primeiroNome);
-//        }
-//    }
-//
-//    private void listarFuncionarios(){
-//        StringBuilder sb = new StringBuilder();
-//
-//        if (listaDeFuncionarios.isEmpty()) {
-//            sb.append("[]");
-//        } else {
-//            sb.append("[\n");
-//            for (Funcionario funcionario : listaDeFuncionarios) {
-//                sb.append("\t").append(funcionario).append(",\n");
-//            }
-//            sb.setLength(sb.length() - 2); // Remover a vírgula extra após o último funcionário
-//            sb.append("\n]");
-//        }
-//
-//        System.out.println(sb);
-//    }
-//
     private boolean escolheuSair(String opcaoDigitada){
         return opcaoDigitada.equals(OPCAO_SAIR);
     }
@@ -141,18 +119,6 @@ public class Loterias {
         System.out.print(DIGITE_OPCAO_DESEJADA);
         return leitor.obterEntrada().toLowerCase();
     }
-//
-//    private Funcionario construirFuncionario(Integer id, EntradaDeDados leitor){
-//        System.out.println("Cadastro de novo funcionário");
-//        System.out.print("Informe o nome: ");
-//        String nome = leitor.obterEntrada();
-//        System.out.print("Informe o departamento: ");
-//        String departamento = leitor.obterEntrada();
-//        System.out.print("Informe o salário: ");
-//        double salario = leitor.obterEntradaAsDouble();
-//        return new Funcionario(id, nome, departamento, salario);
-//
-//    }
 
     private void finalizaApp(){
         System.out.println("Até logo!!");
@@ -169,10 +135,10 @@ public class Loterias {
     private void carregaMenu() {
         System.out.println("********  DIGITE A OPÇÃO DESEJADA   ******");
         System.out.println("1 - VERIFICAR SE SEU JOGO JA FOI SORTEADO ALGUMA VEZ");
-        System.out.println("2 - LISTAR FUNCIONÁRIOS(AS)");
-        System.out.println("3 - CADASTRO EM LOTE (CSV)");
-        System.out.println("4 - PESQUISAR POR ID");
-        System.out.println("5 - PESQUISAR POR NOME");
+        System.out.println("2 - VER A FREQUECIA COM QUE AS DEZENAS SAEM NOS SORTEIOS");
+        System.out.println("3 - VER AS DEZENAS MAIS SORTEADOS");
+//        System.out.println("4 - PESQUISAR POR ID");
+//        System.out.println("5 - PESQUISAR POR NOME");
         System.out.println("X - SAIR");
     }
 

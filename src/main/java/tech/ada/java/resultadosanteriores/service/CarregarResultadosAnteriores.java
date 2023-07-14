@@ -48,7 +48,7 @@ public class CarregarResultadosAnteriores {
 			logger.error("Nao foi possivel carregar os dados", e);
 		}
 		
-		System.out.println("... Dados carregados com sucesso");
+		System.out.println("Dados carregados com sucesso");
 
 		return mapResultadoJogosAnteriores;
 	}

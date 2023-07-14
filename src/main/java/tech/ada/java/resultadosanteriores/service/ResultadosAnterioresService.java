@@ -5,10 +5,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import tech.ada.java.meusjogos.dto.MeuJogoNumerosEscolhidos;
 import tech.ada.java.resultadosanteriores.dto.ConcursoResultado;
+import tech.ada.java.resultadosanteriores.model.ComparatorFrequenciaDezenaSorteada;
+import tech.ada.java.resultadosanteriores.model.FrequenciaDezenaSorteada;
 
 public class ResultadosAnterioresService {
 	
@@ -22,18 +25,6 @@ public class ResultadosAnterioresService {
 	}
 
 	public void checarJogoAlgumaVezSorteado(Map<Integer, MeuJogoNumerosEscolhidos> meusJogos) {
-		
-		//int[] iNumerosAPesquisar = Stream.of(numerosAPesquisar).map(i-> i.trim()).mapToInt(Integer::parseInt).toArray();
-		
-//		for ( ConcursoResultado umConcurso : mapResultadoJogosAnteriores.values() ) {
-//			HashSet<Integer> numerosSorteados = umConcurso.getNumerosSorteados();
-//			int qtdeAcertos = 0;
-//			for (int umNumeroEscolhido : iNumerosAPesquisar) {
-//				boolean contains = numerosSorteados.contains( umNumeroEscolhido );
-//				if( contains ) {
-//					qtdeAcertos ++;
-//				}
-//			}
 
 		for ( MeuJogoNumerosEscolhidos umMeuJogo : meusJogos.values() ) {
 			System.out.println( "Verificando o jogo " + umMeuJogo.getIdJogo() );
@@ -43,34 +34,41 @@ public class ResultadosAnterioresService {
 			Collections.sort(arrayNumerosEscolhidosOrdenar);
 			System.out.println( "Numeros escolhidos: " + arrayNumerosEscolhidosOrdenar);
 			
+			boolean jogoSorteado = false;
 			for ( ConcursoResultado umConcurso : mapResultadoJogosAnteriores.values() ) {
 				HashSet<Integer> numerosSorteados = umConcurso.getNumerosSorteados();
 
-				int qtdeAcertos = 6;
+				int qtdeNumerosAcertados = 6;
 				for (int umNumeroEscolhido : numerosEscolhidos) {
 					boolean contains = numerosSorteados.contains( umNumeroEscolhido );
 					if( ! contains ) {
-						qtdeAcertos --;
+						qtdeNumerosAcertados --;
 					}
-					if( qtdeAcertos < 4 ) {
+					if( qtdeNumerosAcertados < 4 ) {
 						break;
 					}
 				}
-				verificarSeTeriaGanhoAlgo( qtdeAcertos, umConcurso );
+				
+				if( qtdeNumerosAcertados >  3 ) {
+					jogoSorteado  = true;
+					printPremiado( qtdeNumerosAcertados, umConcurso );
+				}
+			}
+			
+			if( ! jogoSorteado ) {
+				printJogoNuncaSorteado();
 
 			}
-//			
-//			for (MeuJogoNumerosEscolhidos umMeuJogo : meusJogos.values()) {
-//				HashSet<Integer> numerosQueEscolhiJogar = umMeuJogo.getNumerosQueEscolhiJogar();
-//				numerosQueEscolhiJogar.retainAll(numerosSorteados);
-//			}
-			
-			
+			pularLinha(1);
+
 		}
-		
 	}
 
-	private void verificarSeTeriaGanhoAlgo(int qtdeAcertos, ConcursoResultado concurso) {
+	private void printJogoNuncaSorteado() {
+		System.out.println("Este jogo nunca foi sorteado nos resultados anteriores.");
+	}
+
+	private void printPremiado(int qtdeAcertos, ConcursoResultado concurso) {
 		String ganhou = null;
 		if( qtdeAcertos == QUADRA ) {
 			ganhou = "QUADRA";
@@ -92,6 +90,58 @@ public class ResultadosAnterioresService {
 					dataSorteioFormatada );
 			System.out.println(msg);
 		}
+	}
+	
+	private void pularLinha(int numeroDeLinhas){
+        for (int i = 1; i <= numeroDeLinhas; i++) {
+            System.out.println();
+        }
+    }
+
+	public void verFrequenciaDezenasSaemSorteios() {
+		
+		List<FrequenciaDezenaSorteada> listaFrequenciaDezenaSorteada = calcularFrequenciaDezenasSorteadas();
+		
+		for (FrequenciaDezenaSorteada frequenciaDezenaSorteada : listaFrequenciaDezenaSorteada) {
+			int dezena = frequenciaDezenaSorteada.getDezena();
+			int qtdeSorteada = frequenciaDezenaSorteada.getQtdeVezesSorteada();
+			String msg = String.format("A dezena %d foi sorteada %d vezes", dezena, qtdeSorteada);
+			System.out.println(msg);
+		}
+		pularLinha(1);
+	}
+	
+	private List<FrequenciaDezenaSorteada> calcularFrequenciaDezenasSorteadas() {
+		int inicioDezenaMegaSena = 1;
+		int fimDezenaMegaSena = 60;
+		
+		List<FrequenciaDezenaSorteada> listaFrequenciaDezenaSorteada = new ArrayList<>();
+		
+		for( int dezena = inicioDezenaMegaSena; dezena <= fimDezenaMegaSena; dezena ++ ) {
+			int qtdeSorteada = 0;
+			for (ConcursoResultado umConcurso : mapResultadoJogosAnteriores.values()) {
+				HashSet<Integer> numerosSorteados = umConcurso.getNumerosSorteados();
+				if( numerosSorteados.contains( dezena ) ) {
+					qtdeSorteada ++;
+				}
+			}
+			listaFrequenciaDezenaSorteada.add( new FrequenciaDezenaSorteada( dezena, qtdeSorteada ) );
+		}
+		return listaFrequenciaDezenaSorteada;
+	}
+	
+	
+
+	public void verDezenasMaisSorteadas() {
+		List<FrequenciaDezenaSorteada> listaFrequenciaDezenaSorteada = calcularFrequenciaDezenasSorteadas();
+		listaFrequenciaDezenaSorteada.sort( new ComparatorFrequenciaDezenaSorteada() );
+		
+		String msg = "A dezena %d foi sorteada %d vezes";
+		
+		listaFrequenciaDezenaSorteada
+			.stream()
+			.forEach( item -> 
+				System.out.println( String.format(msg, item.getDezena(), item.getQtdeVezesSorteada() ) ) );
 		
 	}
 }

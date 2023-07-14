@@ -24,7 +24,7 @@ public class CarregarMeusJogos {
 
 	public static Map<Integer, MeuJogoNumerosEscolhidos> carregar(String filePath) {
 
-		System.out.println("Carregando meus jogos que fiz na mega sena...");
+		System.out.println("Carregando meus jogos que vou apostar na mega sena...");
 		
 		Path path;
 		try {
@@ -48,9 +48,8 @@ public class CarregarMeusJogos {
 			logger.error("Nao foi possivel carregar os dados", e);
 		}
 		
-		System.out.println("... Dados carregados com sucesso");
+		System.out.println("Dados carregados com sucesso");
 
 		return mapMeusJogos;
 	}
-
 }
